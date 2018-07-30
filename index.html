@@ -1,0 +1,182 @@
+<html>
+<head>
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Rock - Paper - Scissors game</title>
+  <style>
+    body {
+      font-family: Helvetica, Arial, sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      padding: 0;
+      position: relative;
+      width: 100%;
+    }
+
+    article {
+      display: flex;
+      flex-direction: column;
+    }
+
+    section {
+      float: left;
+      padding-bottom: 40pt;
+      padding-top: 40pt;
+      width: 100%;
+    }
+
+
+
+    #directions {
+      background-color: #cae5df;
+      color: #333;
+      min-height: 0;
+      padding: 10pt;
+      text-align: center;
+    }
+    #choices {
+      align-items: center;
+      display: flex;
+      justify-content: space-around;
+      width: 100%;
+    }
+    #choices > button {
+      background-color: #1eb584;
+      border-color: #fff;
+      color: #fff;
+      cursor: pointer;
+      font-size: 13.5pt;
+      max-width: 300px;
+      padding-bottom: 20pt;
+      padding-top: 20pt;
+      transition: all .25s;
+      width: 30%;
+    }
+    #choices > button:hover {
+      background-color: #fff;
+      border-color: #1eb584;
+      color: #1eb584;
+      transition: all .5s;
+    }
+
+    #messages {
+      background-color: #fcfafc;
+      border-top: solid thin #eee;
+      color: #373d5d;
+      font-size: 13.5pt;
+      text-align: center;
+    }
+    #messages p:first-child {
+      margin-top: 0;
+    }
+    #messages p:last-child {
+      margin-bottom: 0;
+    }
+    #robo-response {
+      font-size: 75%;
+    }
+
+    #results {
+      background-color: rgba(26,26,26,0.85);
+      font-size: 10pt;
+    }
+    #results table {
+      margin: 0 auto;
+    }
+    #results table thead {
+      color: #c9d1d0;
+      font-weight: bold;
+    }
+    #results table tbody {
+      color: #c9d1d0;
+      font-weight: normal;
+    }
+    #results td {
+      padding: 1pt 10pt;
+    }
+
+    .highlight {
+      color: #1eb584;
+    }
+  </style>
+</head>
+<body>
+  <article>
+    <section id="directions">
+      Choose your throw below, the robots will throw, and your result will show beneath. Good luck!
+    </section>
+    <section id="choices">
+      <button id="choice-rock">Rock</button>
+      <button id="choice-paper">Paper</button>
+      <button id="choice-scissors">Scissors</button>
+    </section>
+    <section id="messages">
+      <p id="robo-response">To start a game</p>
+      <p id="consolation">Click a green button above</p>
+    </section>
+    <section id="results">
+      <table id="results-table">
+        <thead><tr><td>You</td><td>Robot</td><td>Result</td></tr></thead>
+        <tbody id="results-table-body"><tr></tr></tbody>
+      </table>
+    </section>
+  </article>
+
+  <script>
+      const throws = ['Rock', 'Paper', 'Scissors'];
+      const messages_success = ['You win!', 'Congratulations', 'Way to go!', 'Good job!'];
+      const messages_fail = ['Sorry, you lost', 'Not this time', 'Better luck next time', 'The machine won this round'];
+      const messages_tie = ['Oh, dang, it&apos;s a tie!', 'Almost! Tie breaker?'];
+  
+      function doThrow(userChoiceInt) {
+        // CHOOSE A RANDOM NUMBER
+        const computerRandomThrow = Math.floor(Math.random() * 3);
+        // TELL THE USER WHAT WAS CHOSEN
+        document.getElementById('robo-response').innerHTML = `The machine threw <span class="highlight">${throws[computerRandomThrow]}</span>`;
+        
+        // CHOOSE A CONSOLATION 
+        let theResult = theConsolation = '';
+        if (computerRandomThrow === userChoiceInt) {
+          theResult = 'tie';
+          theConsolation = messages_tie[Math.floor(Math.random() * messages_tie.length)];
+
+        }  else if (computerRandomThrow < userChoiceInt || computerRandomThrow === 2 && userChoiceInt === 0) {
+          theResult = 'win';
+          theConsolation = messages_success[Math.floor(Math.random() * messages_success.length)];
+
+        } else {
+          theResult = 'loss';
+          theConsolation = messages_fail[Math.floor(Math.random() * messages_fail.length)];
+        }
+        document.getElementById('consolation').innerHTML = theConsolation;
+        
+        // ADD THIS ROUND TO THE HISTORY LIST
+        const theTable = document.getElementById('results-table');
+        const newRow = theTable.insertRow(-1);
+        const humanCell = newRow.insertCell(-1);
+        const robotCell = newRow.insertCell(-1);
+        const resultCell = newRow.insertCell(-1);
+        let newText = document.createTextNode(throws[userChoiceInt]);
+        humanCell.appendChild(newText);
+        newText = document.createTextNode(throws[computerRandomThrow]);
+        robotCell.appendChild(newText);
+        newText = document.createTextNode(theResult);
+        resultCell.appendChild(newText);
+
+      }
+      
+      function init() {
+        document.getElementById('choice-rock').onclick = (e) => {
+          doThrow(0);
+        }
+        document.getElementById('choice-paper').onclick = (e) => {
+          doThrow(1);
+        }
+        document.getElementById('choice-scissors').onclick = (e) => {
+          doThrow(2);
+        }
+      }
+  
+      init();
+    </script>
+</body>
+</html>
